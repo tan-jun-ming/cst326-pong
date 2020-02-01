@@ -35,20 +35,14 @@ public class BallCollide : MonoBehaviour
         Vector3 normal = contact.normal;
         if (contact.otherCollider.CompareTag("paddle"))
         {
-            //speed += 0.005f;
+            speed += 0.005f;
             float rel_pos = contact.otherCollider.transform.InverseTransformPoint(Vector3.zero).z;
             rel_pos = -((rel_pos) * 45f);
 
             normal = Quaternion.AngleAxis(rel_pos, Vector3.up) * normal;
 
-
-            //print(normal);
-        } else
-        {
-            
         }
-        Vector3 debugpoint = contact.point + Vector3.up;
-        Debug.DrawRay(debugpoint, direction, Color.green, 50);
+
         direction = Vector3.Reflect(direction, normal);
 
         if (normal.x != 0)
@@ -57,22 +51,6 @@ public class BallCollide : MonoBehaviour
         }
 
         direction = Vector3.Normalize(direction);
-        Debug.DrawRay(debugpoint, normal, Color.red, 50);
-        Debug.DrawRay(debugpoint, direction, Color.blue, 50);
-
-
-        //print(contact.otherCollider.transform.position);
-
-        //foreach (ContactPoint contact in collision.contacts)
-        //{
-        //    print(contact.thisCollider.name + " hit " + contact.otherCollider.name);
-        //    print(contact.point);
-        //    print(contact.normal);
-
-
-        //    // Visualize the contact point
-        //    Debug.DrawRay(contact.point, contact.normal, Color.red);
-        //}
 
 
     }
