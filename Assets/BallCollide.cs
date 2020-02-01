@@ -6,7 +6,6 @@ public class BallCollide : MonoBehaviour
 {
 
     private float speed = 0.1f;
-    //private float angle = -120f;
     private Vector3 direction = Vector3.left;
 
     public Transform ball;
