@@ -4,24 +4,55 @@ using UnityEngine;
 
 public class BallCollide : MonoBehaviour
 {
-
-    private float speed = 0.1f;
-    private Vector3 direction = Vector3.left;
+    public GameObject gamemanager_obj;
 
     public Transform ball;
+
+    private float speed;
+    private float speed_delta = 0.01f;
+    private Vector3 direction;
+    private int delay_time;
+    private bool end_state = false;
+
+    private GameManager gamemanager;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        gamemanager = (GameManager)gamemanager_obj.GetComponent(typeof(GameManager));
+        reset(1);
+    }
 
+    public void delay(int frames)
+    {
+        delay_time += frames;
+    }
+
+    public void end_game()
+    {
+        reset(0);
+        end_state = true;
+    }
+
+    public void reset(int dir)
+    {
+        ball.position = Vector3.zero;
+        speed = 0.1f;
+        direction = Vector3.right * dir;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //Vector3 new_vector = Vector3.forward;
-        //new_vector = Quaternion.AngleAxis(angle, Vector3.up) * new_vector * speed;
-        //ball.position += new_vector;
+        if (end_state)
+        {
+            return;
+        } else if (delay_time > 0)
+        {
+            delay_time--;
+            return;
+        }
 
         ball.position += direction * speed;
 
@@ -34,12 +65,14 @@ public class BallCollide : MonoBehaviour
         Vector3 normal = contact.normal;
         if (contact.otherCollider.CompareTag("paddle"))
         {
-            speed += 0.005f;
+            speed += speed_delta;
             float rel_pos = contact.otherCollider.transform.InverseTransformPoint(Vector3.zero).z;
             rel_pos = -((rel_pos) * 45f);
 
             normal = Quaternion.AngleAxis(rel_pos, Vector3.up) * normal;
 
+        } else if (contact.otherCollider.CompareTag("kill_wall")){
+            gamemanager.round_over(contact.otherCollider.name);
         }
 
         direction = Vector3.Reflect(direction, normal);

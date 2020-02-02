@@ -10,6 +10,7 @@ public class PaddleMove : MonoBehaviour
     string horizontal;
     string vertical;
     int speed = 5;
+    bool paddle_locked = false;
 
     // Start is called before the first frame update
     void Start()
@@ -19,11 +20,33 @@ public class PaddleMove : MonoBehaviour
 
     }
 
+    public void reset()
+    {
+        Vector3 vec = paddle.position;
+        vec.z = 0;
+        paddle.position = vec;
+    }
+
+    public void lock_paddle()
+    {
+        reset();
+        paddle_locked = true;
+    }
+
+    public void unlock_paddle()
+    {
+        paddle_locked = false;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (paddle_locked)
+        {
+            return;
+        }
+
         Vector3 vec = paddle.position;
-        //vec.x = Input.GetAxis(horizontal) * Time.deltaTime * speed;
         float delta_z = Input.GetAxis(vertical) * Time.deltaTime * speed;
 
         // define boundaries
