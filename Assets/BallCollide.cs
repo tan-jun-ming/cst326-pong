@@ -8,6 +8,9 @@ public class BallCollide : MonoBehaviour
 
     public Transform ball;
 
+    public bool immortal = false;
+    public bool immobile = false;
+
     private float speed;
     private float speed_delta = 0.01f;
     private Vector3 direction;
@@ -22,6 +25,16 @@ public class BallCollide : MonoBehaviour
     {
         gamemanager = (GameManager)gamemanager_obj.GetComponent(typeof(GameManager));
         reset(1);
+    }
+
+    public Vector3 get_direction()
+    {
+        return direction;
+    }
+
+    public bool get_endstate()
+    {
+        return end_state;
     }
 
     public void delay(int frames)
@@ -45,7 +58,7 @@ public class BallCollide : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (end_state)
+        if (immobile)
         {
             return;
         } else if (delay_time > 0)
@@ -71,7 +84,7 @@ public class BallCollide : MonoBehaviour
 
             normal = Quaternion.AngleAxis(rel_pos, Vector3.up) * normal;
 
-        } else if (contact.otherCollider.CompareTag("kill_wall")){
+        } else if (!immortal && contact.otherCollider.CompareTag("kill_wall")){
             gamemanager.round_over(contact.otherCollider.name);
         }
 

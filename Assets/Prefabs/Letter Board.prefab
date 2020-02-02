@@ -58,7 +58,7 @@ PrefabInstance:
     - target: {fileID: 5421161586458421932, guid: 1e6b1c2e6b4a612469a56ea0560d1ac8,
         type: 3}
       propertyPath: m_Name
-      value: Letter Nix
+      value: Placeholder
       objectReference: {fileID: 0}
     - target: {fileID: 8372760200082665789, guid: 1e6b1c2e6b4a612469a56ea0560d1ac8,
         type: 3}

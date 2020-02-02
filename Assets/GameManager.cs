@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
     private PaddleMove paddle2;
 
     private int delay_counter;
-    private int phase = 0;
+    private int phase;
 
     // Start is called before the first frame update
     void Start()
@@ -36,14 +36,25 @@ public class GameManager : MonoBehaviour
         paddle1 = (PaddleMove)paddle1_obj.GetComponent(typeof(PaddleMove));
         paddle2 = (PaddleMove)paddle2_obj.GetComponent(typeof(PaddleMove));
 
+        game_init();
+    }
+
+    void game_init()
+    {
         p1_score = 0;
         p2_score = 0;
 
-        delay_counter = 30;
+        phase = 0;
+
+        hide_score();
+        letterboard.display_message("game start");
+
+        paddle1.unlock_paddle();
+        paddle2.unlock_paddle();
+
+        delay_counter = 60;
         ball.delay(delay_counter);
-
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -51,6 +62,7 @@ public class GameManager : MonoBehaviour
         {
             case 0: phase_one();  break;
             case 1: phase_two(); break;
+            case 2: phase_three(); break;
             default: break;
         }
     }
@@ -84,23 +96,44 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void phase_three()
+    {
+        if (delay_counter > 0)
+        {
+            delay_counter--;
+            return;
+        }
+
+        game_init(); // Reset game
+    }
+
     void game_end()
     {
         phase++;
 
+        delay_counter = 60;
+        ball.delay(delay_counter);
+
         hide_score();
         paddle1.lock_paddle();
         paddle2.lock_paddle();
-        ball.end_game();
 
+        int winner = 0;
         if (p1_score >= winning_score)
         {
             letterboard.display_message("player 1 wins");
+            winner = 1;
         }
         else if (p2_score >= winning_score)
         {
-            letterboard.display_message("player 2 wins");
+            
+            winner = 2;
         }
+
+        string msg = string.Format("Player {0} wins", winner);
+
+        letterboard.display_message(msg);
+        Debug.Log(msg);
 
     }
 
@@ -111,11 +144,15 @@ public class GameManager : MonoBehaviour
         {
             dir = -1;
             p2_score++;
+
+            Debug.Log("Player 2 scored");
         }
         else if (wall == "wall right")
         {
             dir = 1;
             p1_score++;
+
+            Debug.Log("Player 1 scored");
         }
 
         display_score();
@@ -132,6 +169,8 @@ public class GameManager : MonoBehaviour
     {
         p1_score_display.display_message(p1_score.ToString());
         p2_score_display.display_message(p2_score.ToString());
+
+        Debug.Log(string.Format("{0} - {1}", p1_score, p2_score));
     }
 
     void hide_score()

@@ -6,7 +6,6 @@ public class LetterBoard : MonoBehaviour
 {
     public GameObject letternix_prefab;
     public Transform me;
-    public string start_message;
 
     public int align_style;
     // 0: Left
@@ -18,13 +17,14 @@ public class LetterBoard : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        string message = "";
-        if (start_message != null)
+        foreach (Transform child in me)
         {
-            message = start_message;
+            if (child.name == "Placeholder")
+            {
+                GameObject.Destroy(child.gameObject);
+                break;
+            }
         }
-        display_message(message);
-
     }
 
     public void clear()
@@ -33,6 +33,8 @@ public class LetterBoard : MonoBehaviour
     }
     public void display_message(string msg)
     {
+        msg = msg.ToLower();
+
         foreach (Transform child in me)
         {
             GameObject.Destroy(child.gameObject);
