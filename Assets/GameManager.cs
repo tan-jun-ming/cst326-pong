@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
     private PaddleMove paddle1;
     private PaddleMove paddle2;
 
+    private float hue_delta = 0.1f;
+
     private int delay_counter;
     private int phase;
 
@@ -165,10 +167,16 @@ public class GameManager : MonoBehaviour
 
 
     }
+
+    Color calculate_score_color(int score)
+    {
+        return score == 0 ? Color.black : Color.HSVToRGB((float)((score-1) * hue_delta) % 1, 1, 1);
+    }
     void display_score()
     {
-        p1_score_display.display_message(p1_score.ToString());
-        p2_score_display.display_message(p2_score.ToString());
+
+        p1_score_display.display_message(p1_score.ToString(), calculate_score_color(p1_score));
+        p2_score_display.display_message(p2_score.ToString(), calculate_score_color(p2_score));
 
         Debug.Log(string.Format("{0} - {1}", p1_score, p2_score));
     }
