@@ -98,7 +98,9 @@ public class BallCollide : MonoBehaviour
             ballspeaker.clip = table_hit[Random.Range(0, table_hit.Length - 1)];
         }
 
+        ballspeaker.pitch = speed * 10 - 0.1f;
         ballspeaker.Play();
+
 
         direction = Vector3.Reflect(direction, normal);
 
