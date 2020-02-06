@@ -7,6 +7,10 @@ public class BallCollide : MonoBehaviour
     public GameObject gamemanager_obj;
 
     public Transform ball;
+    public AudioSource ballspeaker;
+
+    public AudioClip[] table_hit;
+    public AudioClip[] paddle_hit;
 
     public bool immortal = false;
     public bool immobile = false;
@@ -76,8 +80,11 @@ public class BallCollide : MonoBehaviour
         ContactPoint contact = collision.GetContact(0);
 
         Vector3 normal = contact.normal;
+
         if (contact.otherCollider.CompareTag("paddle"))
         {
+            ballspeaker.clip = paddle_hit[Random.Range(0, paddle_hit.Length - 1)];
+
             speed += speed_delta;
             float rel_pos = contact.otherCollider.transform.InverseTransformPoint(Vector3.zero).z;
             rel_pos = -((rel_pos) * 45f);
@@ -86,7 +93,12 @@ public class BallCollide : MonoBehaviour
 
         } else if (!immortal && contact.otherCollider.CompareTag("kill_wall")){
             gamemanager.round_over(contact.otherCollider.name);
+        } else
+        {
+            ballspeaker.clip = table_hit[Random.Range(0, table_hit.Length - 1)];
         }
+
+        ballspeaker.Play();
 
         direction = Vector3.Reflect(direction, normal);
 

@@ -26,13 +26,17 @@ public class DeliciousJuice : MonoBehaviour
         ballcollide = (BallCollide)ball.GetComponent(typeof(BallCollide));
         balltransform = ball.transform;
 
-        for (int i = 0; i < cameras.Length; i++)
-        {
-            cameras[i].enabled = i == 0;
-        }
+        swap_camera();
 
     }
 
+    void swap_camera()
+    {
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            cameras[i].enabled = i == camera_count;
+        }
+    }
     // Update is called once per frame
     void Update()
     {
@@ -49,11 +53,9 @@ public class DeliciousJuice : MonoBehaviour
                 camera_count = 0;
             }
 
+            swap_camera();
 
-            for (int i = 0; i<cameras.Length; i++)
-            {
-                cameras[i].enabled = i == camera_count;
-            }
+
 
         }
 
