@@ -7,8 +7,8 @@ public class DeliciousJuice : MonoBehaviour
     public ParticleSystem particle_system;
     public GameObject ball;
 
-
     public Camera[] cameras;
+    public GameObject[] paddles;
 
     private int camera_count = 0;
 
@@ -19,6 +19,9 @@ public class DeliciousJuice : MonoBehaviour
     private Transform balltransform;
 
     private float hue = 0;
+
+    private float pulsate_delta = 0.01f;
+    private float pulsate_level = 1f;
 
     // Start is called before the first frame update
     void Start()
@@ -45,8 +48,6 @@ public class DeliciousJuice : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
-            
-
             camera_count++;
             if (camera_count >= cameras.Length)
             {
@@ -54,9 +55,6 @@ public class DeliciousJuice : MonoBehaviour
             }
 
             swap_camera();
-
-
-
         }
 
         if (Input.GetKeyDown(KeyCode.X))
@@ -79,6 +77,36 @@ public class DeliciousJuice : MonoBehaviour
         {
             DoBallSpin();
         }
+
+        if (pulsate_level >= 1 || pulsate_level <= 0.5)
+        {
+            pulsate_delta = -pulsate_delta;
+        }
+
+        pulsate_level += pulsate_delta;
+
+        foreach (GameObject paddle in paddles)
+        {
+            Color paddle_color = Color.white;
+            int affliction = ((PaddleMove)paddle.gameObject.GetComponent(typeof(PaddleMove))).affliction;
+
+            if (affliction != 0)
+            {
+                float hue = 0f;
+                switch (affliction)
+                {
+                    case 1: hue = 0.7f; break;
+                    case 2: hue = 0.25f; break;
+                    case 3: hue = 0.6f; break;
+                    case 4: hue = 0f; break;
+                }
+                
+                paddle_color = Color.HSVToRGB(hue, pulsate_level, 1);
+            }
+
+            ((MeshRenderer)paddle.gameObject.GetComponent(typeof(MeshRenderer))).material.color = paddle_color;
+        }
+
     }
 
     float random_angle(float num)

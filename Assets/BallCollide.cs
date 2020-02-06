@@ -11,6 +11,7 @@ public class BallCollide : MonoBehaviour
 
     public AudioClip[] table_hit;
     public AudioClip[] paddle_hit;
+    public AudioClip[] squish;
 
     public bool immortal = false;
     public bool immobile = false;
@@ -57,6 +58,7 @@ public class BallCollide : MonoBehaviour
         ball.position = Vector3.zero;
         speed = 0.1f;
         direction = Vector3.right * dir;
+        release();
     }
 
     // Update is called once per frame
@@ -75,15 +77,26 @@ public class BallCollide : MonoBehaviour
 
     }
 
+    public void release()
+    {
+        return;
+        if (immobile)
+        {
+            immobile = false;
+            ballspeaker.PlayOneShot(squish[1], 1f);
+        }
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         ContactPoint contact = collision.GetContact(0);
 
         Vector3 normal = contact.normal;
 
+        AudioClip to_play = null;
         if (contact.otherCollider.CompareTag("paddle"))
         {
-            ballspeaker.clip = paddle_hit[Random.Range(0, paddle_hit.Length - 1)];
+            to_play = paddle_hit[Random.Range(0, paddle_hit.Length - 1)];
 
             speed += speed_delta;
             float rel_pos = contact.otherCollider.transform.InverseTransformPoint(Vector3.zero).z;
@@ -91,15 +104,28 @@ public class BallCollide : MonoBehaviour
 
             normal = Quaternion.AngleAxis(rel_pos, Vector3.up) * normal;
 
+            PaddleMove paddlescript = (PaddleMove)contact.otherCollider.gameObject.GetComponent(typeof(PaddleMove));
+            
+            if (paddlescript.affliction == 2)
+            {
+                immobile = true;
+                to_play = squish[0];
+                paddlescript.hold();
+            }
+
         } else if (!immortal && contact.otherCollider.CompareTag("kill_wall")){
             gamemanager.round_over(contact.otherCollider.name);
         } else
         {
-            ballspeaker.clip = table_hit[Random.Range(0, table_hit.Length - 1)];
+            to_play = table_hit[Random.Range(0, table_hit.Length - 1)];
         }
 
         ballspeaker.pitch = speed * 10 - 0.1f;
-        ballspeaker.Play();
+
+        if (to_play != null)
+        {
+            ballspeaker.PlayOneShot(to_play, 1f);
+        }
 
 
         direction = Vector3.Reflect(direction, normal);
