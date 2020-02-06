@@ -47,6 +47,7 @@ MonoBehaviour:
   letternix_prefab: {fileID: 5421161586458421932, guid: 1e6b1c2e6b4a612469a56ea0560d1ac8,
     type: 3}
   me: {fileID: 0}
+  material: {fileID: 2100000, guid: 3d0fd6bc117e88a45abeba0b57f8fbce, type: 2}
   align_style: 0
 --- !u!1001 &1335187878606430716
 PrefabInstance:

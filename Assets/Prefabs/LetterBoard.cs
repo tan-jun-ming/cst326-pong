@@ -6,6 +6,7 @@ public class LetterBoard : MonoBehaviour
 {
     public GameObject letternix_prefab;
     public Transform me;
+    public Material material = null;
 
     public int align_style;
     // 0: Left
@@ -31,7 +32,13 @@ public class LetterBoard : MonoBehaviour
     {
         display_message("");
     }
+
     public void display_message(string msg)
+    {
+        display_message(msg, Color.black);
+    }
+
+    public void display_message(string msg, Color text_color)
     {
         msg = msg.ToLower();
 
@@ -76,6 +83,8 @@ public class LetterBoard : MonoBehaviour
                 if (child.transform.name == string.Format("letter_{0}", c))
                 {
                     child.SetActive(true);
+                    ((MeshRenderer)child.GetComponent(typeof(MeshRenderer))).material.color = text_color;
+
                     break;
                 }
             }
