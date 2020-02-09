@@ -11,6 +11,7 @@ public class BallCollide : MonoBehaviour
 
     public AudioClip[] table_hit;
     public AudioClip[] paddle_hit;
+    public AudioClip ding;
     public AudioClip[] squish;
 
     public bool immortal = false;
@@ -71,6 +72,7 @@ public class BallCollide : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (immobile)
         {
             return;
@@ -93,8 +95,10 @@ public class BallCollide : MonoBehaviour
         }
     }
 
+
     void OnCollisionEnter(Collision collision)
     {
+
         ContactPoint contact = collision.GetContact(0);
 
         Vector3 normal = contact.normal;
@@ -105,10 +109,11 @@ public class BallCollide : MonoBehaviour
             to_play = paddle_hit[Random.Range(0, paddle_hit.Length)];
 
             speed += speed_delta;
-            float rel_pos = contact.otherCollider.transform.InverseTransformPoint(Vector3.zero).z;
-            rel_pos = -((rel_pos) * 45f);
 
-            normal = Quaternion.AngleAxis(rel_pos, Vector3.up) * normal;
+            float rel_pos = contact.otherCollider.transform.InverseTransformPoint(contact.point).z;
+            rel_pos *= player == 1 ? 1 : -1;
+
+            normal = Quaternion.AngleAxis((rel_pos * 45f), Vector3.up) * normal;
 
             PaddleMove paddlescript = (PaddleMove)contact.otherCollider.gameObject.GetComponent(typeof(PaddleMove));
 
@@ -119,6 +124,9 @@ public class BallCollide : MonoBehaviour
                 immobile = true;
                 to_play = squish[0];
                 paddlescript.hold();
+            } else if (Mathf.Abs(rel_pos) < 0.1)
+            {
+                to_play = ding;
             }
 
         } else if (!immortal && contact.otherCollider.CompareTag("kill_wall")){
@@ -127,6 +135,13 @@ public class BallCollide : MonoBehaviour
         {
             to_play = table_hit[Random.Range(0, table_hit.Length)];
         }
+
+        //print(speed);
+        //if (speed > 0.2f && !immobile)
+        //{
+        //    to_play = ding;
+        //}
+
 
         ballspeaker.pitch = speed * 10 - 0.1f;
 

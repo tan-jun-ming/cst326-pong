@@ -85,6 +85,7 @@ public class PaddleMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (affliction_timer > 0)
         {
             affliction_timer--;
