@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public GameObject letterboard_obj;
     public GameObject paddle1_obj;
     public GameObject paddle2_obj;
+    public PowerupManager powerup_manager;
 
     public int winning_score = 11;
 
@@ -28,6 +29,9 @@ public class GameManager : MonoBehaviour
     private int delay_counter;
     private int phase;
 
+    private const int powerup_delay_max = 600;
+    private int powerup_delay = powerup_delay_max;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +47,8 @@ public class GameManager : MonoBehaviour
 
     void game_init()
     {
+        powerup_manager.hide();
+
         p1_score = 0;
         p2_score = 0;
 
@@ -57,6 +63,7 @@ public class GameManager : MonoBehaviour
         delay_counter = 60;
         ball.delay(delay_counter);
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -85,6 +92,15 @@ public class GameManager : MonoBehaviour
 
     void phase_two()
     {
+        if (powerup_delay > 0)
+        {
+            powerup_delay--;
+        } else
+        {
+            powerup_manager.show();
+            powerup_delay = powerup_delay_max;
+        }
+
         if (delay_counter > 0)
         {
             delay_counter--;
@@ -157,6 +173,8 @@ public class GameManager : MonoBehaviour
             Debug.Log("Player 1 scored");
         }
 
+        powerup_manager.hide();
+        powerup_delay = powerup_delay_max;
         display_score();
         paddle1.reset();
         paddle2.reset();
@@ -185,5 +203,17 @@ public class GameManager : MonoBehaviour
     {
         p1_score_display.clear();
         p2_score_display.clear();
+    }
+
+    public void set_powerup(int player, int powerup)
+    {
+        PaddleMove paddle = paddle1;
+        if (player == 2)
+        {
+            paddle = paddle2;
+        }
+        paddle.set_affliction(powerup);
+
+        powerup_delay = powerup_delay_max;
     }
 }

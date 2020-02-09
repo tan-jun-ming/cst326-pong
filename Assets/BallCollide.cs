@@ -21,6 +21,7 @@ public class BallCollide : MonoBehaviour
     private Vector3 direction;
     private int delay_time;
     private bool end_state = false;
+    private int player = 1;
 
     private GameManager gamemanager;
 
@@ -30,6 +31,11 @@ public class BallCollide : MonoBehaviour
     {
         gamemanager = (GameManager)gamemanager_obj.GetComponent(typeof(GameManager));
         reset(1);
+    }
+
+    public int get_player()
+    {
+        return player;
     }
 
     public Vector3 get_direction()
@@ -58,6 +64,7 @@ public class BallCollide : MonoBehaviour
         ball.position = Vector3.zero;
         speed = 0.1f;
         direction = Vector3.right * dir;
+        player = dir == 1 ? 1 : 2;
         release();
     }
 
@@ -79,7 +86,6 @@ public class BallCollide : MonoBehaviour
 
     public void release()
     {
-        return;
         if (immobile)
         {
             immobile = false;
@@ -96,7 +102,7 @@ public class BallCollide : MonoBehaviour
         AudioClip to_play = null;
         if (contact.otherCollider.CompareTag("paddle"))
         {
-            to_play = paddle_hit[Random.Range(0, paddle_hit.Length - 1)];
+            to_play = paddle_hit[Random.Range(0, paddle_hit.Length)];
 
             speed += speed_delta;
             float rel_pos = contact.otherCollider.transform.InverseTransformPoint(Vector3.zero).z;
@@ -105,7 +111,9 @@ public class BallCollide : MonoBehaviour
             normal = Quaternion.AngleAxis(rel_pos, Vector3.up) * normal;
 
             PaddleMove paddlescript = (PaddleMove)contact.otherCollider.gameObject.GetComponent(typeof(PaddleMove));
-            
+
+            player = paddlescript.player;
+
             if (paddlescript.affliction == 2)
             {
                 immobile = true;
@@ -117,7 +125,7 @@ public class BallCollide : MonoBehaviour
             gamemanager.round_over(contact.otherCollider.name);
         } else
         {
-            to_play = table_hit[Random.Range(0, table_hit.Length - 1)];
+            to_play = table_hit[Random.Range(0, table_hit.Length)];
         }
 
         ballspeaker.pitch = speed * 10 - 0.1f;

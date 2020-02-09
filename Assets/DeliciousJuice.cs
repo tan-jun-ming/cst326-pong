@@ -40,6 +40,21 @@ public class DeliciousJuice : MonoBehaviour
             cameras[i].enabled = i == camera_count;
         }
     }
+
+    public float get_hue(int affliction)
+    {
+        float hue = 0f;
+        switch (affliction)
+        {
+            case 1: hue = 0.7f; break;
+            case 2: hue = 0.25f; break;
+            case 3: hue = 0.6f; break;
+            case 4: hue = 0f; break;
+        }
+
+        return hue;
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -92,16 +107,7 @@ public class DeliciousJuice : MonoBehaviour
 
             if (affliction != 0)
             {
-                float hue = 0f;
-                switch (affliction)
-                {
-                    case 1: hue = 0.7f; break;
-                    case 2: hue = 0.25f; break;
-                    case 3: hue = 0.6f; break;
-                    case 4: hue = 0f; break;
-                }
-                
-                paddle_color = Color.HSVToRGB(hue, pulsate_level, 1);
+                paddle_color = Color.HSVToRGB(get_hue(affliction), pulsate_level, 1);
             }
 
             ((MeshRenderer)paddle.gameObject.GetComponent(typeof(MeshRenderer))).material.color = paddle_color;

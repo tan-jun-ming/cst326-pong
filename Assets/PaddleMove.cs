@@ -10,6 +10,7 @@ public class PaddleMove : MonoBehaviour
     public Transform ball;
 
     public int affliction = 0;
+    // 0: none
     // 1: reversed
     // 2: sticky
     // 3: long
@@ -38,6 +39,9 @@ public class PaddleMove : MonoBehaviour
         Vector3 vec = paddle.position;
         vec.z = 0;
         paddle.position = vec;
+
+        affliction_timer = 0;
+        affliction = 0;
     }
 
     public void lock_paddle()
